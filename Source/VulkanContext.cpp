@@ -4,12 +4,16 @@
 
 #include "VulkanContext.h"
 
+#include "Window.h"
 #include "vulkan/vulkan.hpp"
 
-VulkanContext::VulkanContext(Window& window) {
-    requiredExtensions = {
+VulkanContext::VulkanContext() {
+    requiredInstanceExtensions = {
         VK_KHR_SURFACE_EXTENSION_NAME,
         "VK_KHR_wayland_surface"
+    };
+    requiredDeviceExtensions = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
     requiredLayers = {
         "VK_LAYER_KHRONOS_validation",
@@ -19,13 +23,16 @@ VulkanContext::VulkanContext(Window& window) {
     physicalDevice = selectPhysicalDevice();
     logicalDevice = createLogicalDevice();
     graphicsQueue.queue = getGraphicsQueue(graphicsQueue.familyIndex);
-    surface = window.createSurface(instance);
 }
 
 VulkanContext::~VulkanContext() {
     logicalDevice->destroy();
     instance->destroySurfaceKHR(*surface);
     instance->destroy();
+}
+
+void VulkanContext::CreateSurface(Window* window) {
+    surface = window->createSurface(instance);
 }
 
 vk::Instance* VulkanContext::createInstance() const {
@@ -38,12 +45,15 @@ vk::Instance* VulkanContext::createInstance() const {
 
     auto extensions = vk::enumerateInstanceExtensionProperties();
 
-    std::cout << "Available extensions:" << std::endl;
+    std::cout << "Available Instance extensions:" << std::endl;
     for (const auto extension: extensions) {
         std::cout << "\t" << extension.extensionName << std::endl;
     }
+    std::cout << std::endl;
 
-    for (const auto requiredExtension: requiredExtensions) {
+    std::cout << "Required Instance extensions:" << std::endl;
+    for (const auto requiredExtension: requiredInstanceExtensions) {
+        std::cout << "\t" << requiredExtension << ": ";
         auto extensionFound = false;
         for (auto extension: extensions) {
             if (strcmp(extension.extensionName, requiredExtension) == 0) {
@@ -55,6 +65,7 @@ vk::Instance* VulkanContext::createInstance() const {
         if (!extensionFound) {
             throw std::runtime_error("Required extension not found: " + std::string(requiredExtension));
         }
+        std::cout << "OK" << std::endl;
     }
 
     auto layers = vk::enumerateInstanceLayerProperties();
@@ -78,8 +89,8 @@ vk::Instance* VulkanContext::createInstance() const {
         &appInfo,
         requiredLayers.size(),
         requiredLayers.data(),
-        requiredExtensions.size(),
-        requiredExtensions.data());
+        requiredInstanceExtensions.size(),
+        requiredInstanceExtensions.data());
 
     return new vk::Instance(vk::createInstance(createInfo));
 }
@@ -131,14 +142,39 @@ vk::Device* VulkanContext::createLogicalDevice() const {
 
     graphicsQueue.familyIndex = familyIndex;
 
+    auto extensions = physicalDevice->enumerateDeviceExtensionProperties();
+
+    std::cout << "Available Device extensions:" << std::endl;
+    for (const auto extension: extensions) {
+        std::cout << "\t" << extension.extensionName << std::endl;
+    }
+    std::cout << std::endl;
+
+    std::cout << "Required Device extensions:" << std::endl;
+    for (const auto requiredExtension: requiredDeviceExtensions) {
+        std::cout << "\t" << requiredExtension << ": ";
+        auto extensionFound = false;
+        for (auto extension: extensions) {
+            if (strcmp(extension.extensionName, requiredExtension) == 0) {
+                extensionFound = true;
+                break;
+            }
+        }
+
+        if (!extensionFound) {
+            throw std::runtime_error("Required extension not found: " + std::string(requiredExtension));
+        }
+        std::cout << "OK" << std::endl;
+    }
+
     auto createInfo = vk::DeviceCreateInfo(
         {},
         1,
         &queueCreateInfo,
         0,
         nullptr,
-        0,
-        nullptr,
+        requiredDeviceExtensions.size(),
+        requiredDeviceExtensions.data(),
         new vk::PhysicalDeviceFeatures());
 
     return new vk::Device(physicalDevice->createDevice(createInfo));
@@ -146,8 +182,4 @@ vk::Device* VulkanContext::createLogicalDevice() const {
 
 vk::Queue * VulkanContext::getGraphicsQueue(const uint32 familyIndex) const {
     return new vk::Queue(logicalDevice->getQueue(familyIndex, 0));
-}
-
-vk::SurfaceKHR * VulkanContext::createSurface() const {
-    return nullptr;
 }

@@ -5,7 +5,7 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-
+#include <memory>
 
 class Application {
 
@@ -13,12 +13,12 @@ public:
     Application();
     ~Application();
 
-    void Run();
+    void Run() const;
 
 private:
-    void initWindow();
-    void initVulcan();
 
+    std::shared_ptr<class Window> window;
+    std::unique_ptr<class VulkanContext> vulkanContext;
 };
 
 

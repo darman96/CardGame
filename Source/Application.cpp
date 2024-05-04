@@ -2,17 +2,24 @@
 // Created by erik on 01.05.24.
 //
 
+#include "StdAfx.h"
 #include "Application.h"
+#include "Window.h"
+#include "VulkanContext.h"
 
-Application::Application() {}
-
-Application::~Application() {}
-
-void Application::Run() {
+Application::Application() {
+    const auto windowProps = WindowProps("Card Game", 800, 600);
+    window = std::make_shared<Window>(Window(windowProps));
+    vulkanContext = std::make_unique<VulkanContext>(VulkanContext(*window));
 }
 
-void Application::initWindow() {
-}
+Application::~Application() = default;
 
-void Application::initVulcan() {
+void Application::Run() const {
+
+    while (window->IsOpen()) {
+        window->PollEvents();
+        window->Present();
+    }
+
 }

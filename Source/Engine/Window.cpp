@@ -44,11 +44,8 @@ bool Window::IsOpen() const {
     return glfwWindowShouldClose(window) == false;
 }
 
-vk::SurfaceKHR* Window::createSurface(const vk::Instance *vulkanInstance) const {
-    VkSurfaceKHR surface;
-    if (const auto result = glfwCreateWindowSurface(*vulkanInstance, window, nullptr, &surface); result != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create window surface, error code: " + std::to_string(result));
-    }
-
-    return new vk::SurfaceKHR(surface);
+std::tuple<uint32, uint32> Window::GetFramebufferSize() const {
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    return {static_cast<uint32>(width), static_cast<uint32>(height)};
 }

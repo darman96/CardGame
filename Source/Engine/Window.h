@@ -22,7 +22,7 @@ struct WindowProps {
 };
 
 class Window {
-    friend class VulkanContext;
+    friend class VulkanSurfaceCreator;
 
 public:
     explicit Window(const WindowProps& windowProps);
@@ -31,9 +31,9 @@ public:
     void PollEvents() const;
     void Present() const;
     [[nodiscard]] bool IsOpen() const;
+    [[nodiscard]] std::tuple<uint32, uint32> GetFramebufferSize() const;
 
 private:
-    vk::SurfaceKHR* createSurface(const vk::Instance* vulkanInstance) const;
 
     struct GLFWwindow* window;
 };

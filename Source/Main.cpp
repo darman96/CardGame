@@ -1,10 +1,9 @@
 #include <iostream>
 
-#include "Application.h"
+#include "Engine/Application.h"
 
 int main() {
-
-    Application app;
+    const Application app;
     app.Run();
 
     return 0;

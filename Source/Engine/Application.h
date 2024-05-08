@@ -7,18 +7,20 @@
 
 #include <memory>
 
+#include "Window.h"
+#include "Vulkan/Structs/VulkanContext.h"
+
 class Application {
 
 public:
     Application();
-    ~Application();
 
     void Run() const;
 
 private:
 
-    std::shared_ptr<class Window> window;
-    std::unique_ptr<class VulkanContext> vulkanContext;
+    Window Window;
+    VulkanContext VulkanContext;
 };
 
 

@@ -1,7 +1,3 @@
-//
-// Created by erik on 05.05.24.
-//
-
 #include "VulkanGraphicsPipelineCreator.h"
 #include "VulkanShaderStageCreator.h"
 #include "Structs/VulkanShaderStage.h"
@@ -29,7 +25,8 @@ VulkanGraphicsPipeline VulkanGraphicsPipelineCreator::Create(const vk::Device& d
 
     constexpr auto dynamicStates = std::array {
         vk::DynamicState::eViewport,
-        vk::DynamicState::eLineWidth
+        vk::DynamicState::eLineWidth,
+        vk::DynamicState::eScissor
     };
 
     auto dynamicState = vk::PipelineDynamicStateCreateInfo {

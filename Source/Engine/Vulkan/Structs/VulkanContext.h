@@ -1,10 +1,3 @@
-//
-// Created by erik on 03.05.24.
-//
-
-#ifndef VULKANCONTEXT_H
-#define VULKANCONTEXT_H
-
 #include <vulkan/vulkan.hpp>
 
 #include "Engine/Vulkan/GraphicsPipeline/Structs/VulkanGraphicsPipeline.h"
@@ -29,6 +22,12 @@ struct VulkanContext {
     std::vector<vk::Framebuffer> SwapchainFramebuffers;
 
     VulkanGraphicsPipeline GraphicsPipeline;
+
+    // Vulkan command buffers, fences, and semaphores
+    std::vector<vk::CommandBuffer> CommandBuffers;
+    vk::Fence RenderFence;
+    vk::Semaphore ImageAvailableSemaphore;
+    vk::Semaphore RenderFinishedSemaphore;
 
     ~VulkanContext() {
         LogicalDevice.waitIdle();

@@ -1,10 +1,3 @@
-//
-// Created by erik on 01.05.24.
-//
-
-#ifndef APPLICATION_H
-#define APPLICATION_H
-
 #include <memory>
 
 #include "Window.h"
@@ -21,8 +14,10 @@ private:
 
     Window AppWindow;
     VulkanContext VkContext;
+
+    // Vulkan command buffers, fences, and semaphores
+    std::vector<vk::CommandBuffer> CommandBuffers;
+    vk::Fence RenderFence;
+    vk::Semaphore ImageAvailableSemaphore;
+    vk::Semaphore RenderFinishedSemaphore;
 };
-
-
-
-#endif //APPLICATION_H

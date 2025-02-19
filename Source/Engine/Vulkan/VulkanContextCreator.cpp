@@ -1,7 +1,3 @@
-//
-// Created by erik on 05.05.24.
-//
-
 #include "VulkanContextCreator.h"
 
 #include "VulkanFrameBufferCreator.h"
@@ -29,6 +25,26 @@ VulkanContext VulkanContextCreator::Create(const Window& window) {
     const auto graphicsPipeline = VulkanGraphicsPipelineCreator::Create(logicalDevice, std::get<vk::Extent2D>(swapchain));
     const auto swapchainFramebuffers = VulkanFrameBufferCreator::Create(logicalDevice, swapchainImageViews, graphicsPipeline.RenderPass, std::get<vk::Extent2D>(swapchain));
 
+    // Create command pool
+    vk::CommandPoolCreateInfo poolInfo{};
+    poolInfo.queueFamilyIndex = queueFamilyInfo.GraphicsFamilyIndex.value();
+    vk::CommandPool commandPool = logicalDevice.createCommandPool(poolInfo);
+
+    // Allocate command buffers
+    vk::CommandBufferAllocateInfo allocInfo{};
+    allocInfo.commandPool = commandPool;
+    allocInfo.level = vk::CommandBufferLevel::ePrimary;
+    allocInfo.commandBufferCount = static_cast<uint32_t>(swapchainFramebuffers.size());
+    std::vector<vk::CommandBuffer> commandBuffers = logicalDevice.allocateCommandBuffers(allocInfo);
+
+    // Create synchronization objects
+    vk::SemaphoreCreateInfo semaphoreInfo{};
+    vk::FenceCreateInfo fenceInfo{};
+
+    vk::Semaphore imageAvailableSemaphore = logicalDevice.createSemaphore(semaphoreInfo);
+    vk::Semaphore renderFinishedSemaphore = logicalDevice.createSemaphore(semaphoreInfo);
+    vk::Fence renderFence = logicalDevice.createFence(fenceInfo);
+
     return VulkanContext {
         .Instance = instance,
         .Surface = surface,
@@ -42,6 +58,10 @@ VulkanContext VulkanContextCreator::Create(const Window& window) {
         .SwapchainImages = swapchainImages,
         .SwapchainImageViews = swapchainImageViews,
         .SwapchainFramebuffers = swapchainFramebuffers,
-        .GraphicsPipeline = graphicsPipeline
+        .GraphicsPipeline = graphicsPipeline,
+        .CommandBuffers = commandBuffers,
+        .RenderFence = renderFence,
+        .ImageAvailableSemaphore = imageAvailableSemaphore,
+        .RenderFinishedSemaphore = renderFinishedSemaphore
     };
 }

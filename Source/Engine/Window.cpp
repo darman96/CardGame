@@ -1,6 +1,3 @@
-//
-// Created by erik on 03.05.24.
-//
 #include "StdAfx.h"
 #include "Window.h"
 
@@ -14,7 +11,7 @@ Window::Window(const WindowProps &windowProps) {
     }
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     window = glfwCreateWindow(
         static_cast<int>(windowProps.width),
@@ -25,6 +22,12 @@ Window::Window(const WindowProps &windowProps) {
     if (!window) {
         throw std::runtime_error("Failed to create window");
     }
+
+    glfwSetWindowUserPointer(window, this);
+    glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
+        auto appWindow = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+        appWindow->framebufferResized = true;
+    });
 }
 
 Window::~Window() {
@@ -48,4 +51,12 @@ std::tuple<uint32, uint32> Window::GetFramebufferSize() const {
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     return {static_cast<uint32>(width), static_cast<uint32>(height)};
+}
+
+bool Window::WasResized() const {
+    return framebufferResized;
+}
+
+void Window::ResetResizedFlag() {
+    framebufferResized = false;
 }

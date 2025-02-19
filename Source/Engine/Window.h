@@ -1,10 +1,3 @@
-//
-// Created by erik on 03.05.24.
-//
-
-#ifndef WINDOW_H
-#define WINDOW_H
-
 #include <utility>
 
 namespace vk {
@@ -32,12 +25,11 @@ public:
     void Present() const;
     [[nodiscard]] bool IsOpen() const;
     [[nodiscard]] std::tuple<uint32, uint32> GetFramebufferSize() const;
+    [[nodiscard]] bool WasResized() const;
+    void ResetResizedFlag();
 
 private:
 
     struct GLFWwindow* window;
+    bool framebufferResized = false;
 };
-
-
-
-#endif //WINDOW_H

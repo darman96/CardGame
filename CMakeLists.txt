@@ -10,7 +10,6 @@ set(GLFW_INSTALL OFF CACHE BOOL "GLFW no install")
 add_subdirectory(Dependencies/GLFW)
 
 # Vulkan
-set(VULKAN_SDK "Dependencies/VulkanSdk/1.3.280.1/x86_64" CACHE PATH "Vulkan SDK path")
 add_definitions(-DVULKAN_HPP_NO_CONSTRUCTORS)
 find_package(Vulkan REQUIRED)
 
@@ -53,8 +52,6 @@ add_executable(CardGame Source/Main.cpp
         Source/Engine/Vulkan/GraphicsPipeline/VulkanGraphicsPipelineCreator.cpp
         Source/Engine/Vulkan/GraphicsPipeline/VulkanGraphicsPipelineCreator.h
         Source/Engine/Vulkan/GraphicsPipeline/Structs/VulkanGraphicsPipeline.h
-        Source/Engine/Vulkan/GraphicsPipeline/VulkanPipelineLayoutCreator.cpp
-        Source/Engine/Vulkan/GraphicsPipeline/VulkanPipelineLayoutCreator.h
         Source/Engine/Vulkan/GraphicsPipeline/Structs/VulkanShaderStage.h
         Source/Engine/Vulkan/GraphicsPipeline/VulkanShaderStageCreator.cpp
         Source/Engine/Vulkan/GraphicsPipeline/VulkanShaderStageCreator.h

@@ -36,9 +36,9 @@ vk::InstanceCreateInfo VulkanInstanceCreator::createInstanceCreateInfo(const vk:
 
     return vk::InstanceCreateInfo {
         .pApplicationInfo = &appInfo,
-        .enabledExtensionCount = static_cast<uint32_t>(VulkanContext::InstanceExtensions.size()),
-        .ppEnabledExtensionNames = VulkanContext::InstanceExtensions.data(),
         .enabledLayerCount = static_cast<uint32_t>(VulkanContext::ValidationLayers.size()),
-        .ppEnabledLayerNames = VulkanContext::ValidationLayers.data()
+        .ppEnabledLayerNames = VulkanContext::ValidationLayers.data(),
+        .enabledExtensionCount = static_cast<uint32_t>(VulkanContext::InstanceExtensions.size()),
+        .ppEnabledExtensionNames = VulkanContext::InstanceExtensions.data()
     };
 }

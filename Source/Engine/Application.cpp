@@ -8,14 +8,14 @@
 #include "Vulkan/VulkanContextCreator.h"
 
 Application::Application()
-    : Window(::Window(WindowProps("Card Game", 800, 600))),
-      VulkanContext(VulkanContextCreator::Create(Window)) {}
+    : AppWindow(::Window(WindowProps("Card Game", 800, 600))),
+      VkContext(VulkanContextCreator::Create(AppWindow)) {}
 
 void Application::Run() const {
 
-    while (Window.IsOpen()) {
-        Window.PollEvents();
-        Window.Present();
+    while (AppWindow.IsOpen()) {
+        AppWindow.PollEvents();
+        AppWindow.Present();
     }
 
 }

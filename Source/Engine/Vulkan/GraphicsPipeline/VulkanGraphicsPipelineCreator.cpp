@@ -72,20 +72,20 @@ VulkanGraphicsPipeline VulkanGraphicsPipelineCreator::Create(const vk::Device& d
         .depthClampEnable = VK_FALSE,
         .rasterizerDiscardEnable = VK_FALSE,
         .polygonMode = vk::PolygonMode::eFill,
-        .lineWidth = 1.0f,
         .cullMode = vk::CullModeFlagBits::eBack,
         .frontFace = vk::FrontFace::eClockwise,
-        .depthBiasEnable = VK_FALSE
+        .depthBiasEnable = VK_FALSE,
+        .lineWidth = 1.0f
     };
 
     constexpr auto multisampling = vk::PipelineMultisampleStateCreateInfo {
-        .sampleShadingEnable = VK_FALSE,
-        .rasterizationSamples = vk::SampleCountFlagBits::e1
+        .rasterizationSamples = vk::SampleCountFlagBits::e1,
+        .sampleShadingEnable = VK_FALSE
     };
 
     const auto colorBlendAttachment = vk::PipelineColorBlendAttachmentState {
-        .colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA,
-        .blendEnable = VK_FALSE
+        .blendEnable = VK_FALSE,
+        .colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA
     };
 
     const auto colorBlending = vk::PipelineColorBlendStateCreateInfo {

@@ -19,8 +19,8 @@ public:
 
 private:
 
-    Window Window;
-    VulkanContext VulkanContext;
+    Window AppWindow;
+    VulkanContext VkContext;
 };
 
 
